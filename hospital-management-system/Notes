@@ -1,0 +1,271 @@
+To make all sub modules as individual jars
+
+so we can fix that particular module if there is any issue occurs
+and we can build it to the production
+
+
+-> To make individual jar, add
+in all sub modules
+
+<packaging>jar</packaging>
+
+
+
+-->
+create domain >
+create packages
+ model
+    doctor
+     patient
+
+
+ as we arleady added lombok
+
+
+-->
+now create repository
+
+create packages
+   dao
+       doctor
+       patient
+
+      similarly we can add...
+
+      diagnostic repository &
+      billing repository
+
+
+ create repository for doctor
+
+ create interface > DoctorRepository
+
+   and extend it from jpa repository
+
+   give the modle(which is doctor)
+   and it
+
+   this doctor class is not visible to this repository module
+   to access the doctor fields in this repository, what we need to do is
+
+   we need to add domain as dependency in the
+   repository module
+
+
+-> go to pom.xml  & add dependency
+
+
+---------->
+<dependencies>
+        <dependency>
+            <groupId>com.srinivart</groupId>
+            <artifactId>domain</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+---------->
+
+
+ --> Now we can able to access the domain in
+ Doctor Repository
+
+and give the primary key
+
+
+
+-->
+Now go to service and create service for doctor
+
+create package
+
+in doctor service we need access this repository
+so access it from services ..goto pom.xml
+
+and add repository as dependency
+
+
+go to service > doctor> Doctor service
+and anotate this with @service
+
+now we need to inject the repository
+
+
+
+
+// wrtie some logic to get all the doctors
+
+
+
+
+
+-->
+now go to web to add controller
+
+
+--> now to access the service inside
+the doctor controller
+
+add service as dependency in web module
+
+
+            <groupId>com.srinivart</groupId>
+            <artifactId>service</artifactId>
+
+
+
+   go to controller
+   now in controller we need to inject the service
+
+
+
+-->
+now write rest end point in controller
+
+
+
+
+--> To run this web application we need
+spring boot main class
+
+
+write that in webcomponent
+
+
+--> to run this class, we need web dependency
+
+
+go to parent pom
+
+copy the web dependency , and add it in our
+web component
+
+
+       <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+
+
+
+
+-->
+now go to hms application
+and enable component scan..
+we are using multip module project
+
+becuase we are not following the structure
+so add @componentScan
+@Entityscan
+
+
+
+
+before run application
+add h2 console and enable it
+to see what are the data present in our in memeory database
+
+
+
+
+--> create one file
+
+resources > application.properties
+
+to enable the h2 console
+
+spring.h2.console.enabled=true;
+
+
+
+now run main class
+
+
+
+
+--->
+http://localhost:8080/
+
+{
+  "_links" : {
+    "doctors" : {
+      "href" : "http://localhost:8080/doctors{?page,size,sort}",
+      "templated" : true
+    },
+    "profile" : {
+      "href" : "http://localhost:8080/profile"
+    }
+  }
+}
+
+---->
+server.port=8080
+spring.h2.console.enabled=true
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=create
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=sa
+#spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+
+#spring.datasource.url=jdbc:h2:file:/data/demo
+
+
+
+
+
+
+
+----->
+http://localhost:8080/h2-console
+
+
+
+
+
+Check console logs,
+where the db is created
+--------->
+H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+
+jdbc:h2:mem:testdb
+
+
+
+--->
+Test
+
+select * from DOCTOR
+
+
+
+
+we are able to see the data
+with which we added using post constructor
+
+
+
+
+
+
+-->
+to see the reusability
+
+goto email
+
+
+
+
+we want to access this email service from the doctor service
+
+
+so go to pom.xml
+and add email api as dependency
+
+
+
+goto service > DoctorService
+
+we need to inject the email service here
